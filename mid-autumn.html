@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中秋祝福 - 阙丽云</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+  }
+  body {
+    background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 40%, #4a2c5a 70%, #6b3a5c 100%);
+    position: relative;
+  }
+
+  /* 星星 */
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* 云朵 */
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50px;
+    filter: blur(8px);
+  }
+
+  /* 祝福雨容器 */
+  #rainContainer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+  }
+  .blessing {
+    position: absolute;
+    top: -120px;
+    color: #ffd97a;
+    font-weight: bold;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 10px;
+    line-height: 1.3;
+    text-shadow: 0 0 8px rgba(255,217,122,0.8), 0 0 16px rgba(255,180,80,0.5);
+    opacity: 0;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* 月饼容器 - 初始居中，可点击 */
+  .mooncake {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 220px; height: 220px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 20;
+    transition: top 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                left 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                right 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                width 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                height 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                border-radius 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 1.8s ease,
+                filter 1.8s ease;
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
+  }
+  .mooncake:hover {
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+  .mooncake svg {
+    width: 100%; height: 100%;
+    display: block;
+    transition: opacity 1.2s ease 0.2s, transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* 月饼浮动提示 */
+  .mooncake::after {
+    content: "点击点亮中秋";
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffd97a;
+    font-size: 14px;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    opacity: 0.8;
+    animation: hintPulse 1.8s ease-in-out infinite;
+    transition: opacity 0.5s ease;
+  }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+  }
+
+  /* 月饼浮动呼吸 */
+  .mooncake-float {
+    animation: cakeFloat 3s ease-in-out infinite;
+  }
+  @keyframes cakeFloat {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-10px); }
+  }
+
+  /* 变形为月亮后的状态 */
+  .mooncake.is-moon {
+    top: 70px;
+    right: 90px;
+    left: auto;
+    width: 150px; height: 150px;
+    transform: translate(0, 0);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff9e6, #ffe9a8 55%, #ffd97a);
+    box-shadow: 0 0 70px 25px rgba(255,233,168,0.55),
+                0 0 140px 55px rgba(255,217,122,0.3),
+                0 0 200px 80px rgba(255,180,80,0.15);
+    z-index: 1;
+    pointer-events: none;
+    cursor: default;
+    animation: moonGlow 4s ease-in-out 1.8s infinite;
+  }
+  .mooncake.is-moon svg {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  .mooncake.is-moon::after {
+    opacity: 0;
+  }
+  .mooncake.is-moon:hover {
+    transform: translate(0, 0) scale(1);
+  }
+  @keyframes moonGlow {
+    0%, 100% {
+      box-shadow: 0 0 70px 25px rgba(255,233,168,0.55),
+                  0 0 140px 55px rgba(255,217,122,0.3),
+                  0 0 200px 80px rgba(255,180,80,0.15);
+    }
+    50% {
+      box-shadow: 0 0 90px 35px rgba(255,233,168,0.7),
+                  0 0 180px 70px rgba(255,217,122,0.4),
+                  0 0 260px 100px rgba(255,180,80,0.2);
+    }
+  }
+
+  /* 标题文字 */
+  .title {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-out;
+  }
+  .title.show {
+    opacity: 1;
+  }
+  .title h1 {
+    font-size: 64px;
+    color: #ffe9a8;
+    text-shadow: 0 0 20px rgba(255,180,80,0.8), 0 4px 8px rgba(0,0,0,0.4);
+    margin-bottom: 16px;
+    letter-spacing: 8px;
+  }
+  .title .name {
+    font-size: 36px;
+    color: #ffd97a;
+    text-shadow: 0 0 12px rgba(255,180,80,0.6);
+    letter-spacing: 4px;
+  }
+  .title .name span {
+    color: #ff9f43;
+    font-weight: bold;
+  }
+
+  /* 底部文字 */
+  .footer-text {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,233,168,0.6);
+    font-size: 14px;
+    letter-spacing: 2px;
+    z-index: 30;
+  }
+
+  /* 光晕扩散特效 */
+  .glow-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(255,217,122,0.5);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+  }
+  .glow-ring.burst {
+    animation: ringExpand 2.2s ease-out forwards;
+  }
+  @keyframes ringExpand {
+    0% { width: 0; height: 0; opacity: 0.8; border-width: 4px; }
+    100% { width: 700px; height: 700px; opacity: 0; border-width: 1px; }
+  }
+</style>
+</head>
+<body>
+  <div id="stars"></div>
+
+  <div class="cloud" style="width:200px;height:40px;top:120px;left:10%;"></div>
+  <div class="cloud" style="width:280px;height:50px;top:200px;left:55%;"></div>
+  <div class="cloud" style="width:160px;height:35px;top:350px;left:25%;"></div>
+
+  <div id="rainContainer"></div>
+
+  <div class="glow-ring" id="glowRing"></div>
+
+  <div class="title" id="title">
+    <h1>中秋快乐</h1>
+    <div class="name">致 <span>阙丽云</span></div>
+  </div>
+
+  <div class="mooncake mooncake-float" id="mooncake">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cakeGrad" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stop-color="#ffe49a"/>
+          <stop offset="50%" stop-color="#f5b94a"/>
+          <stop offset="100%" stop-color="#d98a20"/>
+        </radialGradient>
+        <radialGradient id="cakeShine" cx="40%" cy="35%" r="40%">
+          <stop offset="0%" stop-color="#fff5d0" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#fff5d0" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- 月饼外圈波浪边 -->
+      <path d="M100,10
+               C115,10 120,20 130,18 C140,16 145,8 155,15
+               C165,22 160,32 168,38 C176,44 188,40 190,52
+               C192,64 182,70 186,82 C190,94 184,100 184,110
+               C184,120 192,126 186,138 C180,150 168,146 166,158
+               C164,170 154,168 146,176 C138,184 140,196 128,196
+               C116,196 110,186 100,186 C90,186 84,196 72,196
+               C60,196 62,184 54,176 C46,168 36,170 34,158
+               C32,146 20,150 14,138 C8,126 16,120 16,110
+               C16,100 10,94 14,82 C18,70 8,64 10,52
+               C12,40 24,44 32,38 C40,32 35,22 45,15
+               C55,8 60,16 70,18 C80,20 85,10 100,10 Z"
+            fill="url(#cakeGrad)" stroke="#b8701a" stroke-width="2"/>
+      <!-- 高光 -->
+      <ellipse cx="80" cy="60" rx="40" ry="28" fill="url(#cakeShine)"/>
+      <!-- 内圈装饰线 -->
+      <circle cx="100" cy="100" r="68" fill="none" stroke="#c47a1e" stroke-width="2" opacity="0.5"/>
+      <circle cx="100" cy="100" r="58" fill="none" stroke="#c47a1e" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 3"/>
+      <!-- 中间传统纹样 -->
+      <g stroke="#a86412" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+        <rect x="72" y="72" width="56" height="56" rx="4"/>
+        <path d="M82,82 L82,118 L118,118 L118,82 Z"/>
+        <path d="M90,90 L90,110 L110,110 L110,90 Z"/>
+        <path d="M100,82 L100,118 M82,100 L118,100"/>
+        <path d="M72,72 Q60,72 60,60 Q60,72 72,72"/>
+        <path d="M128,72 Q140,72 140,60 Q140,72 128,72"/>
+        <path d="M72,128 Q60,128 60,140 Q60,128 72,128"/>
+        <path d="M128,128 Q140,128 140,140 Q140,128 128,128"/>
+      </g>
+      <g fill="#e89c2a" opacity="0.6">
+        <ellipse cx="100" cy="30" rx="8" ry="14"/>
+        <ellipse cx="100" cy="170" rx="8" ry="14"/>
+        <ellipse cx="30" cy="100" rx="14" ry="8"/>
+        <ellipse cx="170" cy="100" rx="14" ry="8"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="footer-text">月圆人团圆 · 花好月更圆</div>
+
+<script>
+  // 生成星星
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 2 + 's';
+    starsEl.appendChild(s);
+  }
+
+  // 中秋祝福语
+  const blessings = [
+    '今夜明月挂天际，惜无佳人与共赏',
+    '此夜中秋月，清光十万家',
+    '暮云受尽溢清寒，银汉无声转玉盘',
+    '但愿人长久，千里共婵娟',
+    '月亮慢慢变圆，事情慢慢如愿',
+    '月亮是我掷的硬币，正反两面都是光'
+  ];
+
+  const colors = ['#ffd97a', '#ffe9a8', '#ff9f43', '#ffb347', '#fff3cd', '#ffd700'];
+  const container = document.getElementById('rainContainer');
+  let rainStarted = false;
+
+  function createBlessing() {
+    const el = document.createElement('div');
+    el.className = 'blessing';
+    const text = blessings[Math.floor(Math.random() * blessings.length)];
+    el.textContent = text;
+    el.style.left = Math.random() * 100 + '%';
+    const fontSize = Math.random() * 10 + 20;
+    el.style.fontSize = fontSize + 'px';
+    el.style.color = colors[Math.floor(Math.random() * colors.length)];
+    const duration = Math.random() * 5 + 7;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = Math.random() * 1 + 's';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), duration * 1000 + 1500);
+  }
+
+  function startRain() {
+    if (rainStarted) return;
+    rainStarted = true;
+    for (let i = 0; i < 6; i++) {
+      setTimeout(createBlessing, i * 400);
+    }
+    setInterval(createBlessing, 700);
+  }
+
+  // 点击月饼 -> 变成月亮
+  const mooncake = document.getElementById('mooncake');
+  const title = document.getElementById('title');
+  const glowRing = document.getElementById('glowRing');
+
+  mooncake.addEventListener('click', function() {
+    if (mooncake.classList.contains('is-moon')) return;
+
+    // 停止浮动动画
+    mooncake.classList.remove('mooncake-float');
+    // 触发光晕扩散
+    glowRing.classList.add('burst');
+    // 变形为月亮
+    mooncake.classList.add('is-moon');
+    // 显示标题
+    setTimeout(() => title.classList.add('show'), 800);
+    // 启动祝福雨
+    setTimeout(startRain, 1200);
+  });
+</script>
+</body>
+</html>
